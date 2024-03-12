@@ -5,9 +5,6 @@ services:
     build: .
     command: python manage.py runserver 0.0.0.0:8000
     volumes:
-      - .:/cars
-    image: cars-image
-    container_name: projetocars
-   
+      - .:/app
     ports:
-      - "8000:8000"
+      - '8000:8000'

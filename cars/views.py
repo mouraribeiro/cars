@@ -3,38 +3,28 @@ from cars.models import Car
 from cars.forms import CarsModelForm
 from django.views import View
 from django.views.generic.list import ListView
+from django.views.generic import CreateView
 
 
-# Create your views here.
+# Create your views here.  
 
-
-
-class CarsView(View):
+class CarsListView(ListView):    
+    model = Car
+    template_name = 'cars.html'
+    context_object_name = 'cars'
     
-    def get(self,request):
-        cars = Car.objects.all().order_by('model')
-        search = request.GET.get('search')
+    def get_queryset(self):
+        queryset = super().get_queryset().order_by('model')
+        search = self.request.GET.get('search')
         if search:
-            cars = cars.filter(model__icontains=search)
-        return render(request, 'cars.html', {'cars': cars})
-        
-
-# class CarsListView(ListView):
-#     model = Car
-#     template_name = 'cars.html'
-#     context_object_name = 'cars'
+            queryset = queryset.filter(model__icontains=search) #unaccent' ajuda mas só com postgres
+        return queryset
    
+
+        
+class NewCarCreateView(CreateView):
     
-class NewCarView(View):
-    def get(self,request):
-        new_car_form = CarsModelForm()
-        return render(request, 'new_car.html', {'new_car_form':new_car_form})
-        
-    def post(self,request):
-        new_car_form = CarsModelForm(request.POST, request.FILES)
-        if new_car_form.is_valid():
-            new_car_form.save()
-            return redirect('cars_list')
-        return render(request, 'new_car.html', {'new_car_form':new_car_form})   
-        
-        
+    model = Car
+    form_class = CarsModelForm
+    template_name = 'new_car.html'  
+    success_url = '/cars/'         
