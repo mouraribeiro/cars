@@ -6,8 +6,8 @@ services:
     command: python manage.py runserver 0.0.0.0:8000
     volumes:
       - .:/cars
-      - .:/cars-image
-      - container_name: projeto-cars
-      - .db_data/db.sqlite3:/db.sqlite3
+    image: cars-image
+    container_name: projetocars
+   
     ports:
       - "8000:8000"
